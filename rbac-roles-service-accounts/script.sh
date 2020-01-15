@@ -6,6 +6,8 @@ SERVICE_ACCOUNT_NAME="webapp-service-account"
 NAMESPACE="webapp-namespace"
 KUBECFG_FILE_NAME="admin.conf"
 
+apk add --update coreutils
+
 SECRET_NAME=$(kubectl get sa "${SERVICE_ACCOUNT_NAME}" --namespace="${NAMESPACE}" -o json | jq -r .secrets[].name)
 kubectl get secret --namespace="${NAMESPACE}" "${SECRET_NAME}" -o json | jq -r '.data["ca.crt"]' | base64 --decode > ca.crt
 USER_TOKEN=$(kubectl get secret --namespace webapp-namespace "${SECRET_NAME}" -o json | jq -r '.data["token"]' | base64 --decode)
